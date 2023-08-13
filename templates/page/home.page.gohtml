@@ -1,0 +1,15 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center mt-3">Hellow World</h1>
+            <hr>
+            {{template "login" }}
+            <hr>
+            <small>Your request came from {{.IP}}</small>
+        </div>
+    </div>
+</div>
+{{end}}
