@@ -10,21 +10,32 @@ import (
 
 var pathToTemplate = "./templates"
 
+const (
+	pathToPage   = "page"
+	pathToLayout = "layout"
+)
+
+// TemplateData template data custom type
 type TemplateData struct {
 	IP   string         //IP ADDRESS
 	Data map[string]any // DATA map
 }
 
+// HandlerHome -> Home handler
 func (app *application) HandlerHome(w http.ResponseWriter, r *http.Request) {
-	_ = app.Render(w, r, "home.page.gohtml", &TemplateData{})
+	_ = app.Render(w, r, path.Join(pathToPage, "home.page.gohtml"), &TemplateData{})
 }
 
+// Render page
 func (app *application) Render(w http.ResponseWriter, r *http.Request, t string, data *TemplateData) error {
-	// parse the template from disk
-	parsedTemp, err := template.ParseFiles(
+	// file to render on each page
+	files := []string{
 		path.Join(pathToTemplate, t),
-		path.Join(pathToTemplate, "login.page.gohtml"),
-	)
+		path.Join(pathToTemplate, pathToLayout, "base.layout.gohtml"),
+		path.Join(pathToTemplate, pathToPage, "login.page.gohtml"),
+	}
+	// parse the template from disk
+	parsedTemp, err := template.ParseFiles(files...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return err
@@ -41,6 +52,7 @@ func (app *application) Render(w http.ResponseWriter, r *http.Request, t string,
 	return nil
 }
 
+// HandlerLogin -> Handle login page events
 func (app *application) HandlerLogin(w http.ResponseWriter, r *http.Request) {
 	// parse form
 	if err := r.ParseForm(); err != nil {

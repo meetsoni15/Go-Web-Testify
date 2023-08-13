@@ -1,3 +1,4 @@
+{{define "base"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,16 +9,8 @@
     integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-     <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1 class="text-center mt-3">Hellow World</h1>
-                <hr>
-                {{template "login.page.gohtml" }}
-                <hr>
-                <small>Your request came from {{.IP}}</small>
-            </div>
-        </div>
-     </div>   
+     {{block "content" .}}
+     {{end}}  
 </body>
 </html>
+{{end}}
