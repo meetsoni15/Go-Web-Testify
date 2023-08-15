@@ -4,13 +4,19 @@ import (
 	"log"
 	"net/http"
 	"runtime/debug"
+
+	"github.com/alexedwards/scs/v2"
 )
 
-type application struct{}
+type application struct {
+	Session *scs.SessionManager
+}
 
 func main() {
 	// init app config
-	app := application{}
+	app := application{
+		Session: getSession(),
+	}
 
 	// init router
 	mux := app.routes()
