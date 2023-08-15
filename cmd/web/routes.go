@@ -15,6 +15,8 @@ func (app *application) routes() http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(app.addIpToContext)
+	// session manager middleware
+	r.Use(app.Session.LoadAndSave)
 
 	// register routes
 	r.Get("/", app.HandlerHome)
