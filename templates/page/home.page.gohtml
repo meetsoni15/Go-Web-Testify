@@ -6,9 +6,10 @@
         <div class="col">
             <h1 class="text-center mt-3">Hellow World</h1>
             <hr>
-            {{template "login" }}
+            {{template "login"}}
             <hr>
-            <small>Your request came from {{.IP}}</small>
+            <small>Your request came from {{.IP}}</small><br>
+            <small>From Session: {{.Data.test}}</small><br>
         </div>
     </div>
 </div>
