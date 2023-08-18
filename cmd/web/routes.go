@@ -9,7 +9,7 @@ import (
 
 func (app *application) routes() http.Handler {
 	// init router
-	r := chi.NewRouter()
+	r := chi.NewMux()
 
 	// Attached middleware
 	r.Use(middleware.Logger)

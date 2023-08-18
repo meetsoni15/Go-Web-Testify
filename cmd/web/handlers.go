@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"time"
 )
 
 var pathToTemplate = "./templates"
@@ -23,11 +24,23 @@ type TemplateData struct {
 
 // HandlerHome -> Home handler
 func (app *application) HandlerHome(w http.ResponseWriter, r *http.Request) {
-	_ = app.Render(w, r, path.Join(pathToPage, "home.page.gohtml"), &TemplateData{})
+	var td = make(map[string]any)
+	// check if session key exist
+	if app.Session.Exists(r.Context(), "test") {
+		td["test"] = app.Session.GetString(r.Context(), "test")
+	} else {
+		app.Session.Put(r.Context(), "test", "Hit this page at"+time.Now().String())
+	}
+
+	_ = app.Render(w, path.Join(pathToPage, "home.page.gohtml"), &TemplateData{
+		Data: td,
+		// add IP address
+		IP: app.ipFromContext(r.Context()),
+	})
 }
 
 // Render page
-func (app *application) Render(w http.ResponseWriter, r *http.Request, t string, data *TemplateData) error {
+func (app *application) Render(w http.ResponseWriter, t string, data *TemplateData) error {
 	// file to render on each page
 	files := []string{
 		path.Join(pathToTemplate, t),
@@ -40,9 +53,6 @@ func (app *application) Render(w http.ResponseWriter, r *http.Request, t string,
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return err
 	}
-
-	// add IP address
-	data.IP = app.ipFromContext(r.Context())
 
 	// Execute template
 	if err := parsedTemp.Execute(w, data); err != nil {
