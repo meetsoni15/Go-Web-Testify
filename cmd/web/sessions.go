@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -10,7 +9,6 @@ import (
 
 // getSession will create new session and return it
 func getSession() *scs.SessionManager {
-	log.Println("Here")
 	session := scs.New()
 	session.Lifetime = 24 * time.Hour
 	session.Cookie.Persist = true
