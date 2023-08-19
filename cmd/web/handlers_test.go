@@ -126,3 +126,25 @@ func addContextAndSessionToReq(r *http.Request, app application) *http.Request {
 	ctx, _ := app.Session.Load(r.Context(), r.Header.Get("X-Session"))
 	return r.WithContext(ctx)
 }
+
+// render with bad template
+func Test_application_render(t *testing.T) {
+	theTests := []struct {
+		name         string
+		templatePath string
+		expectedErr  bool
+	}{
+		{"Template not found", "home.page.html", true},
+		{"Execute error", "testdata/test.page.gohtml", true},
+	}
+
+	for _, test := range theTests {
+		// create response recorder
+		rr := httptest.NewRecorder()
+
+		err := app.Render(rr, test.templatePath, &TemplateData{})
+		if test.expectedErr && err == nil {
+			t.Errorf("For %s expected error but didn't get one", test.name)
+		}
+	}
+}
