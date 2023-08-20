@@ -49,3 +49,26 @@ func (p *PostgresConn) AllUsers() ([]*data.User, error) {
 
 	return users, nil
 }
+
+// GetUser return one user by id
+func (p *PostgresConn) GetUser(id int) (*data.User, error) {
+	// create context
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	query := `SELECT id, first_name, last_name, email, password, is_admin, created_at, updated_at FROM users WHERE id = $1`
+
+	var user data.User
+	row := p.DB.QueryRowContext(ctx, query)
+	if err := row.Scan(&user.ID,
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.Password,
+		&user.IsAdmin,
+		&user.CreatedAt,
+		&user.UpdatedAt); err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
